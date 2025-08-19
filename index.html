@@ -1,4 +1,4 @@
-Dan ini yang paling penting banget halaman utama <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -37,6 +37,13 @@ Dan ini yang paling penting banget halaman utama <!DOCTYPE html>
         }
         .modal-content-enter-from, .modal-content-leave-to {
             transform: scale(0.95);
+        }
+        .post-type-btn {
+            transition: all 0.3s ease;
+        }
+        .post-type-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -109,13 +116,22 @@ Dan ini yang paling penting banget halaman utama <!DOCTYPE html>
             <div id="post-type-selection">
                 <h2 id="modal-title" class="text-xl font-bold text-gray-800 mb-6 text-center">Pilih Jenis Postingan</h2>
                 <div class="grid grid-cols-1 gap-4">
-                    <button id="btn-post-discussion" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-600 transition-colors duration-300">
+                    <button id="btn-post-discussion" class="post-type-btn bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-600 transition-colors duration-300 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                        </svg>
                         Buat Diskusi Lokal
                     </button>
-                    <button id="btn-post-selling" class="bg-green-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-green-600 transition-colors duration-300">
+                    <button id="btn-post-selling" class="post-type-btn bg-green-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-green-600 transition-colors duration-300 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
                         Jual Beli / Jasa
                     </button>
-                    <button id="btn-post-job" class="bg-purple-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-purple-600 transition-colors duration-300">
+                    <button id="btn-post-job" class="post-type-btn bg-purple-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-purple-600 transition-colors duration-300 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.18 0-6.22-1.28-8.455-3.645M19 8l-7 7-7-7" />
+                        </svg>
                         Posting Lowongan Kerja
                     </button>
                 </div>
@@ -341,18 +357,24 @@ Dan ini yang paling penting banget halaman utama <!DOCTYPE html>
             postFormContainer.classList.remove('hidden');
             formTitle.textContent = 'Buat Diskusi Lokal';
             discussionForm.classList.remove('hidden');
+            sellingForm.classList.add('hidden');
+            jobForm.classList.add('hidden');
         });
         btnPostSelling.addEventListener('click', () => {
             postTypeSelection.classList.add('hidden');
             postFormContainer.classList.remove('hidden');
             formTitle.textContent = 'Posting Jual Beli / Jasa';
             sellingForm.classList.remove('hidden');
+            discussionForm.classList.add('hidden');
+            jobForm.classList.add('hidden');
         });
         btnPostJob.addEventListener('click', () => {
             postTypeSelection.classList.add('hidden');
             postFormContainer.classList.remove('hidden');
             formTitle.textContent = 'Posting Lowongan Kerja';
             jobForm.classList.remove('hidden');
+            discussionForm.classList.add('hidden');
+            sellingForm.classList.add('hidden');
         });
         
         // Event listener untuk tombol 'Kembali' di dalam modal
