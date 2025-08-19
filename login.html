@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk & Daftar - Forum Konveksi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white p-8 md:p-12 rounded-2xl shadow-xl w-full max-w-md">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Selamat Datang</h1>
+            <p class="text-gray-500 mt-2">Masuk atau daftar untuk bergabung dengan komunitas</p>
+        </div>
+        <div class="flex justify-center mb-6">
+            <button id="show-login-btn" class="px-6 py-2 rounded-full text-sm font-semibold bg-blue-500 text-white">Masuk</button>
+            <button id="show-signup-btn" class="px-6 py-2 rounded-full text-sm font-semibold ml-4 bg-gray-200 text-gray-700">Daftar</button>
+        </div>
+        <form id="login-form" class="space-y-4">
+            <div>
+                <label for="login-email">Email</label>
+                <input type="email" id="login-email" name="email" required>
+            </div>
+            <div>
+                <label for="login-password">Kata Sandi</label>
+                <input type="password" id="login-password" name="password" required>
+            </div>
+            <button type="submit">Masuk</button>
+        </form>
+        <form id="signup-form" class="space-y-4 hidden">
+            <div>
+                <label for="signup-email">Email</label>
+                <input type="email" id="signup-email" name="email" required>
+            </div>
+            <div>
+                <label for="signup-password">Kata Sandi</label>
+                <input type="password" id="signup-password" name="password" required>
+            </div>
+            <button type="submit">Daftar</button>
+        </form>
+        <div class="flex items-center my-6">
+            <div class="flex-grow border-t"></div>
+            <span class="mx-4">ATAU</span>
+            <div class="flex-grow border-t"></div>
+        </div>
+        <button id="google-login-btn">Masuk dengan Google</button>
+        <div id="message-box" class="mt-6 text-center"></div>
+    </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCUVWNlCM1JTlBMuQ1e3XN95ENE79DtiHE",
+            authDomain: "konveksi-bandung-ef729.firebaseapp.com",
+            projectId: "konveksi-bandung-ef729",
+            storageBucket: "konveksi-bandung-ef729.firebasestorage.app",
+            messagingSenderId: "951408791669",
+            appId: "1:951408791669:web:cf30bffb8e7fd061c3683c",
+            measurementId: "G-SQZLMW9KGL"
+        };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+    </script>
+</body>
+</html>
