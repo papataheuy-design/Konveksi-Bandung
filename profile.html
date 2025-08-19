@@ -3,12 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profil - Konveksi Bandung</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Lengkapi Profil Anda - Forum Konveksi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>body{font-family:'Inter',sans-serif;}</style>
 </head>
-<body>
-  <h1>Profil Konveksi Bandung</h1>
-  <p>Informasi profil akan ditampilkan di sini.</p>
-  <button onclick="location.href='login.html'">Lanjut ke Login</button>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4 md:p-8">
+
+  <!-- Kontainer -->
+  <div class="bg-white p-6 md:p-10 rounded-2xl shadow-xl w-full max-w-2xl space-y-6">
+    <header class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Profil Saya</h1>
+      <a href="index.html" class="text-blue-500 hover:text-blue-700 font-semibold">&larr; Ke Beranda</a>
+    </header>
+
+    <div id="message-box" class="hidden text-center text-sm p-3 rounded-xl"></div>
+
+    <form id="profile-form" class="space-y-6">
+      <!-- Informasi dasar -->
+      <div class="space-y-4">
+        <h2 class="text-xl font-semibold text-gray-700">Informasi Dasar</h2>
+        <input type="text" id="nama" placeholder="Nama Lengkap" class="w-full p-3 bg-gray-100 rounded-xl" required>
+        <input type="text" id="lokasi" placeholder="Lokasi (Kota)" class="w-full p-3 bg-gray-100 rounded-xl" required>
+        <textarea id="bio" placeholder="Bio Singkat" class="w-full p-3 bg-gray-100 rounded-xl"></textarea>
+      </div>
+
+      <!-- Peran -->
+      <div>
+        <h2 class="text-xl font-semibold text-gray-700 mb-2">Peran Anda</h2>
+        <select id="peran" required class="w-full p-3 bg-gray-100 rounded-xl">
+          <option value="">-- Pilih salah satu --</option>
+          <option value="produsen">Produsen / Penjahit</option>
+          <option value="reseller">Reseller</option>
+          <option value="pencari_kerja">Pencari Kerja</option>
+          <option value="pelanggan">Pelanggan</option>
+        </select>
+      </div>
+
+      <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold hover:bg-blue-600">Simpan Profil</button>
+    </form>
+  </div>
+
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+    // Config dari login.html
+    const firebaseConfig = {
+      apiKey: "AIzaSyCUVWNlCM1JTlBMuQ1e3XN95ENE79DtiHE",
+      authDomain: "konveksi-bandung-ef729.firebaseapp.com",
+      projectId: "konveksi-bandung-ef729",
+      storageBucket: "konveksi-bandung-ef729.appspot.com",
+      messagingSenderId: "951408791669",
+      appId: "1:951408791669:web:cf30bffb8e7fd061c3683c",
+      measurementId: "G-SQZLMW9KGL"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const form = document.getElementById("profile-form");
+    const messageBox = document.getElementById("message-box");
+
+    const showMessage = (msg,type="info")=>{
+      messageBox.textContent=msg;
+      messageBox.classList.remove("hidden","text-red-500","text-green-500");
+      messageBox.classList.add(type==="error"?"text-red-500":"text-green-500");
+    };
+
+    let currentUser;
+
+    onAuthStateChanged(auth, async (user)=>{
+      if(!user){
+        window.location.href="login.html"; // kalau belum login balik ke login
+      }else{
+        currentUser=user;
+        // coba ambil data lama
+        const snap=await getDoc(doc(db,"users",user.uid));
+        if(snap.exists()){
+          const d=snap.data();
+          document.getElementById("nama").value=d.nama||"";
+          document.getElementById("lokasi").value=d.lokasi||"";
+          document.getElementById("bio").value=d.bio||"";
+          document.getElementById("peran").value=d.peran||"";
+        }
+      }
+    });
+
+    form.addEventListener("submit",async e=>{
+      e.preventDefault();
+      if(!currentUser){showMessage("Anda belum login","error");return;}
+
+      const data={
+        nama:document.getElementById("nama").value,
+        lokasi:document.getElementById("lokasi").value,
+        bio:document.getElementById("bio").value,
+        peran:document.getElementById("peran").value,
+        updatedAt:new Date().toISOString()
+      };
+
+      await setDoc(doc(db,"users",currentUser.uid),data,{merge:true});
+      showMessage("Profil berhasil disimpan!","success");
+
+      setTimeout(()=>{window.location.href="index.html"},1500);
+    });
+  </script>
 </body>
 </html>
