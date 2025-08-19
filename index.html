@@ -1,14 +1,620 @@
-<!DOCTYPE html>
+Dan ini yang paling penting banget halaman utama <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Konveksi Bandung - Home</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homepage - Forum Konveksi</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .scroll-snap-x {
+            scroll-snap-type: x mandatory;
+        }
+        .scroll-snap-start {
+            scroll-snap-align: start;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .modal-enter-active {
+            transition: opacity 0.3s ease;
+        }
+        .modal-enter-from, .modal-leave-to {
+            opacity: 0;
+        }
+        .modal-content-enter-active {
+            transition: transform 0.3s ease;
+        }
+        .modal-content-enter-from, .modal-content-leave-to {
+            transform: scale(0.95);
+        }
+    </style>
 </head>
-<body>
-  <h1>Selamat Datang di Konveksi Bandung</h1>
-  <p>Ini adalah halaman utama.</p>
-  <button onclick="location.href='profile.html'">Lanjut ke Profil</button>
+<body class="bg-gray-100 min-h-screen">
+
+    <!-- Header & User Profile -->
+    <header class="bg-white shadow-md py-4 px-6 flex justify-between items-center sticky top-0 z-50">
+        <h1 class="text-xl font-bold text-gray-800 hidden md:block">Forum Konveksi Bandung</h1>
+        <div class="flex items-center space-x-4">
+            <div id="user-info" class="flex items-center space-x-2">
+                <img id="user-profile-pic" class="w-8 h-8 rounded-full border border-gray-300" src="https://placehold.co/100x100" alt="Foto Profil">
+                <span id="user-name" class="text-sm font-medium text-gray-700">Nama Pengguna</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4">
+        
+        <!-- Banner Geser Otomatis -->
+        <div class="relative w-full overflow-hidden rounded-2xl shadow-lg mb-8">
+            <div id="banner-container" class="flex transition-transform duration-700">
+                <!-- Banner 1 -->
+                <div class="w-full flex-shrink-0">
+                    <img src="https://placehold.co/1200x400/A020F0/ffffff?text=Diskon+Jasa+Jahit+Khusus+Anggota" alt="Banner 1" class="w-full h-auto object-cover">
+                </div>
+                <!-- Banner 2 -->
+                <div class="w-full flex-shrink-0">
+                    <img src="https://placehold.co/1200x400/3498DB/ffffff?text=Lowongan+Pekerjaan+Penjahit+Profesional" alt="Banner 2" class="w-full h-auto object-cover">
+                </div>
+                <!-- Banner 3 -->
+                <div class="w-full flex-shrink-0">
+                    <img src="https://placehold.co/1200x400/2ECC71/ffffff?text=Belajar+Membuat+Pola+Online+Sekarang!" alt="Banner 3" class="w-full h-auto object-cover">
+                </div>
+            </div>
+            <!-- Indikator Banner -->
+            <div id="banner-indicators" class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2"></div>
+        </div>
+
+        <!-- Kolom Pencarian dan Tombol Post -->
+        <div class="mb-8 flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+            <div class="flex flex-grow w-full md:w-auto items-center bg-white rounded-xl shadow-md p-2">
+                <input type="text" id="search-input" placeholder="Cari postingan, produk, atau lowongan..." class="flex-grow bg-transparent focus:outline-none text-gray-700 px-2 py-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <button id="btn-post" class="bg-blue-500 text-white w-full md:w-auto md:min-w-[150px] font-semibold py-2 px-6 rounded-xl hover:bg-blue-600 transition-colors duration-300">
+                Buat Postingan
+            </button>
+        </div>
+        
+        <!-- Bagian Preview Postingan -->
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Postingan Terbaru</h2>
+        <div id="post-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Contoh Postingan akan dirender di sini oleh JavaScript -->
+        </div>
+
+    </main>
+    
+    <!-- Modal untuk Formulir Posting (Pop-up 1) -->
+    <div id="post-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div id="modal-content" class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg relative">
+            <button id="close-post-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            
+            <!-- Tahap 1: Pilihan Postingan -->
+            <div id="post-type-selection">
+                <h2 id="modal-title" class="text-xl font-bold text-gray-800 mb-6 text-center">Pilih Jenis Postingan</h2>
+                <div class="grid grid-cols-1 gap-4">
+                    <button id="btn-post-discussion" class="bg-blue-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-blue-600 transition-colors duration-300">
+                        Buat Diskusi Lokal
+                    </button>
+                    <button id="btn-post-selling" class="bg-green-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-green-600 transition-colors duration-300">
+                        Jual Beli / Jasa
+                    </button>
+                    <button id="btn-post-job" class="bg-purple-500 text-white font-semibold py-3 px-6 rounded-xl hover:bg-purple-600 transition-colors duration-300">
+                        Posting Lowongan Kerja
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tahap 2: Formulir Postingan -->
+            <div id="post-form-container" class="hidden">
+                <button id="back-to-selection" class="text-blue-500 hover:text-blue-700 font-medium mb-4 flex items-center space-x-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span>Kembali</span>
+                </button>
+                <h2 id="form-title" class="text-xl font-bold text-gray-800 mb-6"></h2>
+                
+                <!-- Form untuk Diskusi -->
+                <form id="discussion-form" class="space-y-4 hidden">
+                    <div>
+                        <label for="discussion-title" class="block text-sm font-medium text-gray-700">Judul Diskusi</label>
+                        <input type="text" id="discussion-title" name="title" required class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="discussion-content" class="block text-sm font-medium text-gray-700">Isi Postingan</label>
+                        <textarea id="discussion-content" name="content" rows="6" required class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 focus:outline-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold hover:bg-blue-600">Posting Diskusi</button>
+                </form>
+                
+                <!-- Form untuk Jualan -->
+                <form id="selling-form" class="space-y-4 hidden">
+                    <div>
+                        <label for="selling-title" class="block text-sm font-medium text-gray-700">Judul Produk / Jasa</label>
+                        <input type="text" id="selling-title" name="title" required class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="selling-price" class="block text-sm font-medium text-gray-700">Harga (Rp)</label>
+                        <input type="number" id="selling-price" name="price" required class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="selling-image" class="block text-sm font-medium text-gray-700">Foto Produk</label>
+                        <input type="file" id="selling-image" name="image" accept="image/*" required class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <div>
+                        <label for="selling-description" class="block text-sm font-medium text-gray-700">Deskripsi</label>
+                        <textarea id="selling-description" name="description" rows="4" required class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 focus:outline-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-green-500 text-white py-3 rounded-xl font-semibold hover:bg-green-600">Posting Jualan</button>
+                </form>
+
+                <!-- Form untuk Loker -->
+                <form id="job-form" class="space-y-4 hidden">
+                    <div>
+                        <label for="job-title" class="block text-sm font-medium text-gray-700">Judul Lowongan</label>
+                        <input type="text" id="job-title" name="title" required class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label for="job-description" class="block text-sm font-medium text-gray-700">Deskripsi Pekerjaan</label>
+                        <textarea id="job-description" name="description" rows="6" required class="mt-1 block w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-xl focus:border-blue-500 focus:ring-blue-500 focus:outline-none"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-purple-500 text-white py-3 rounded-xl font-semibold hover:bg-purple-600">Posting Lowongan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Message Box for alerts -->
+    <div id="message-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm relative transform transition-transform duration-300 ease-in-out">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Informasi</h3>
+            <p id="message-content" class="text-gray-600 mb-6"></p>
+            <button id="close-message-modal" class="w-full bg-blue-500 text-white py-2 rounded-xl font-semibold hover:bg-blue-600 transition-colors duration-300">
+                Tutup
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal untuk Detail Postingan (Pop-up 2) -->
+    <div id="detail-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg relative max-h-[90vh] overflow-y-auto">
+            <button id="close-detail-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div id="detail-content">
+                <!-- Konten detail akan dirender di sini oleh JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        // Impor modul Firebase yang diperlukan
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, addDoc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables provided by the Canvas environment
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Referensi elemen DOM
+        const userNameEl = document.getElementById('user-name');
+        const userProfilePicEl = document.getElementById('user-profile-pic');
+        const postGrid = document.getElementById('post-grid');
+        const postModal = document.getElementById('post-modal');
+        const closePostModalBtn = document.getElementById('close-post-modal-btn');
+        const btnPost = document.getElementById('btn-post');
+        const postTypeSelection = document.getElementById('post-type-selection');
+        const postFormContainer = document.getElementById('post-form-container');
+        const formTitle = document.getElementById('form-title');
+        const btnPostDiscussion = document.getElementById('btn-post-discussion');
+        const btnPostSelling = document.getElementById('btn-post-selling');
+        const btnPostJob = document.getElementById('btn-post-job');
+        const discussionForm = document.getElementById('discussion-form');
+        const sellingForm = document.getElementById('selling-form');
+        const jobForm = document.getElementById('job-form');
+        const searchInput = document.getElementById('search-input');
+        const backToSelectionBtn = document.getElementById('back-to-selection');
+        const detailModal = document.getElementById('detail-modal');
+        const closeDetailModalBtn = document.getElementById('close-detail-modal-btn');
+        const detailContent = document.getElementById('detail-content');
+        const messageModal = document.getElementById('message-modal');
+        const messageContentEl = document.getElementById('message-content');
+        const closeMessageModalBtn = document.getElementById('close-message-modal');
+
+        let currentUser;
+        let currentUserProfile = {
+            namaPengguna: 'Pengguna',
+            profilPicUrl: 'https://placehold.co/100x100'
+        };
+        let allPosts = []; // Simpan semua postingan yang diambil dari Firestore
+
+        // Fungsi untuk menampilkan pesan kustom
+        const showMessage = (message) => {
+            messageContentEl.textContent = message;
+            messageModal.classList.remove('hidden');
+        };
+
+        // Fungsi untuk mengunggah gambar ke Cloudinary (placeholder)
+        const uploadImageToCloudinary = async (file) => {
+            // Ini adalah fungsi placeholder. Dalam aplikasi nyata, Anda akan
+            // mengintegrasikan dengan layanan unggah file seperti Cloudinary.
+            console.log(`Mengunggah file ${file.name} ke layanan unggah...`);
+            // Mengembalikan URL gambar placeholder
+            return 'https://placehold.co/400x400/FFFFFF/000000?text=Gambar';
+        };
+
+        // Fungsi untuk menampilkan modal posting
+        const showPostModal = () => {
+            postModal.classList.remove('hidden');
+            postTypeSelection.classList.remove('hidden');
+            postFormContainer.classList.add('hidden');
+        };
+
+        // Fungsi untuk menampilkan modal detail
+        const showDetailModal = (post) => {
+            detailContent.innerHTML = ''; // Bersihkan konten sebelumnya
+            let htmlContent = '';
+            
+            // Format konten berdasarkan tipe postingan
+            if (post.type === 'discussion') {
+                htmlContent = `
+                    <div class="flex items-center mb-4">
+                        <img class="w-10 h-10 rounded-full border border-gray-300" src="${post.userPic}" alt="Avatar">
+                        <div class="ml-3">
+                            <p class="font-semibold text-gray-800">${post.userName}</p>
+                            <p class="text-sm text-gray-500">${new Date(post.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">${post.title}</h3>
+                    <p class="text-gray-600 leading-relaxed">${post.content}</p>
+                `;
+            } else if (post.type === 'selling') {
+                    htmlContent = `
+                        <img class="w-full h-64 object-cover rounded-xl mb-4" src="${post.imageUrl || 'https://placehold.co/600x400'}" alt="Produk Jualan">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">${post.title}</h3>
+                        <p class="text-xl font-bold text-green-600 mb-4">Rp ${post.price ? post.price.toLocaleString('id-ID') : '0'}</p>
+                        <p class="text-gray-600 leading-relaxed mb-4">${post.description}</p>
+                        <div class="flex items-center">
+                            <img class="w-8 h-8 rounded-full border border-gray-300" src="${post.userPic}" alt="Avatar">
+                            <span class="ml-2 text-sm text-gray-700">${post.userName}</span>
+                        </div>
+                    `;
+            } else if (post.type === 'job') {
+                htmlContent = `
+                    <div class="flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.18 0-6.22-1.28-8.455-3.645M19 8l-7 7-7-7" />
+                        </svg>
+                        <div class="ml-3">
+                            <p class="font-semibold text-gray-800">${post.userName}</p>
+                            <p class="text-sm text-gray-500">${new Date(post.createdAt).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">${post.title}</h3>
+                    <p class="text-gray-600 leading-relaxed">${post.description}</p>
+                `;
+            }
+            detailContent.innerHTML = htmlContent;
+            detailModal.classList.remove('hidden');
+        };
+
+        // Event listener untuk tombol 'Buat Postingan'
+        btnPost.addEventListener('click', () => {
+            if (currentUser) {
+                showPostModal();
+            } else {
+                // Gunakan kotak pesan kustom sebagai ganti alert()
+                showMessage('Anda harus login untuk membuat postingan.');
+            }
+        });
+
+        // Event listener untuk tombol-tombol pilihan postingan
+        btnPostDiscussion.addEventListener('click', () => {
+            postTypeSelection.classList.add('hidden');
+            postFormContainer.classList.remove('hidden');
+            formTitle.textContent = 'Buat Diskusi Lokal';
+            discussionForm.classList.remove('hidden');
+        });
+        btnPostSelling.addEventListener('click', () => {
+            postTypeSelection.classList.add('hidden');
+            postFormContainer.classList.remove('hidden');
+            formTitle.textContent = 'Posting Jual Beli / Jasa';
+            sellingForm.classList.remove('hidden');
+        });
+        btnPostJob.addEventListener('click', () => {
+            postTypeSelection.classList.add('hidden');
+            postFormContainer.classList.remove('hidden');
+            formTitle.textContent = 'Posting Lowongan Kerja';
+            jobForm.classList.remove('hidden');
+        });
+        
+        // Event listener untuk tombol 'Kembali' di dalam modal
+        backToSelectionBtn.addEventListener('click', () => {
+            postFormContainer.classList.add('hidden');
+            postTypeSelection.classList.remove('hidden');
+            discussionForm.classList.add('hidden');
+            sellingForm.classList.add('hidden');
+            jobForm.classList.add('hidden');
+        });
+
+        // Event listener untuk tombol menutup modal
+        closePostModalBtn.addEventListener('click', () => {
+            postModal.classList.add('hidden');
+            // Reset modal ke tampilan awal
+            postTypeSelection.classList.remove('hidden');
+            postFormContainer.classList.add('hidden');
+            discussionForm.classList.add('hidden');
+            sellingForm.classList.add('hidden');
+            jobForm.classList.add('hidden');
+        });
+        closeDetailModalBtn.addEventListener('click', () => {
+            detailModal.classList.add('hidden');
+        });
+        closeMessageModalBtn.addEventListener('click', () => {
+            messageModal.classList.add('hidden');
+        });
+
+        // Event listener untuk pengiriman formulir posting
+        discussionForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = e.target.elements['discussion-title'].value;
+            const content = e.target.elements['discussion-content'].value;
+            await addDoc(collection(db, "artifacts", appId, "public", "data", "posts"), {
+                userId: currentUser.uid,
+                userName: currentUserProfile?.namaPengguna || 'Pengguna',
+                userPic: currentUserProfile?.profilPicUrl || 'https://placehold.co/100x100',
+                type: 'discussion',
+                title: title,
+                content: content,
+                createdAt: Date.now()
+            });
+            postModal.classList.add('hidden');
+            e.target.reset();
+        });
+
+        sellingForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = e.target.elements['selling-title'].value;
+            const price = e.target.elements['selling-price'].value;
+            const description = e.target.elements['selling-description'].value;
+            const imageFile = e.target.elements['selling-image'].files[0];
+            const imageUrl = imageFile ? await uploadImageToCloudinary(imageFile) : null;
+            await addDoc(collection(db, "artifacts", appId, "public", "data", "posts"), {
+                userId: currentUser.uid,
+                userName: currentUserProfile?.namaPengguna || 'Pengguna',
+                userPic: currentUserProfile?.profilPicUrl || 'https://placehold.co/100x100',
+                type: 'selling',
+                title: title,
+                price: Number(price),
+                description: description,
+                imageUrl: imageUrl,
+                createdAt: Date.now()
+            });
+            postModal.classList.add('hidden');
+            e.target.reset();
+        });
+
+        jobForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const title = e.target.elements['job-title'].value;
+            const description = e.target.elements['job-description'].value;
+            await addDoc(collection(db, "artifacts", appId, "public", "data", "posts"), {
+                userId: currentUser.uid,
+                userName: currentUserProfile?.namaPengguna || 'Pengguna',
+                userPic: currentUserProfile?.profilPicUrl || 'https://placehold.co/100x100',
+                type: 'job',
+                title: title,
+                description: description,
+                createdAt: Date.now()
+            });
+            postModal.classList.add('hidden');
+            e.target.reset();
+        });
+
+        // Fungsi untuk merender postingan ke UI
+        const renderPosts = (posts) => {
+            postGrid.innerHTML = '';
+            // Urutkan postingan berdasarkan tanggal terbaru secara manual
+            const sortedPosts = posts.sort((a, b) => b.createdAt - a.createdAt);
+
+            sortedPosts.forEach(post => {
+                let postHtml = '';
+                if (post.type === 'discussion') {
+                    postHtml = `
+                        <div class="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:bg-gray-50 transition-colors duration-200" data-post-id="${post.id}">
+                            <div class="flex items-center mb-4">
+                                <img class="w-8 h-8 rounded-full border border-gray-300" src="${post.userPic}" alt="Avatar">
+                                <div class="ml-3">
+                                    <p class="font-semibold text-gray-800">${post.userName}</p>
+                                    <p class="text-xs text-gray-500">${new Date(post.createdAt).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">${post.title}</h3>
+                            <p class="text-gray-600 line-clamp-3">${post.content}</p>
+                            <div class="mt-4 text-sm text-gray-500 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                </svg>
+                                <span>0 Komentar</span>
+                            </div>
+                        </div>
+                    `;
+                } else if (post.type === 'selling') {
+                    postHtml = `
+                        <div class="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:bg-gray-50 transition-colors duration-200" data-post-id="${post.id}">
+                            <img class="w-full h-48 object-cover rounded-xl mb-4" src="${post.imageUrl || 'https://placehold.co/600x400'}" alt="Produk Jualan">
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">${post.title}</h3>
+                            <p class="text-sm font-semibold text-green-600 mb-2">Rp ${post.price ? post.price.toLocaleString('id-ID') : '0'}</p>
+                            <p class="text-gray-600 line-clamp-3">${post.description}</p>
+                            <div class="mt-4 flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <img class="w-6 h-6 rounded-full border border-gray-300" src="${post.userPic}" alt="Avatar">
+                                    <span class="ml-2 text-sm text-gray-700">${post.userName}</span>
+                                </div>
+                                <a href="#" class="text-blue-500 hover:underline text-sm font-medium">Lihat Detail</a>
+                            </div>
+                        </div>
+                    `;
+                } else if (post.type === 'job') {
+                    postHtml = `
+                        <div class="bg-white rounded-2xl shadow-md p-6 cursor-pointer hover:bg-gray-50 transition-colors duration-200" data-post-id="${post.id}">
+                            <div class="flex items-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.18 0-6.22-1.28-8.455-3.645M19 8l-7 7-7-7" />
+                                </svg>
+                                <div class="ml-3">
+                                    <p class="font-semibold text-gray-800">${post.userName}</p>
+                                    <p class="text-xs text-gray-500">${new Date(post.createdAt).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-800 mb-2">${post.title}</h3>
+                            <p class="text-gray-600 line-clamp-3">${post.description}</p>
+                            <div class="mt-4 flex items-center justify-end">
+                                <a href="#" class="text-blue-500 hover:underline text-sm font-medium">Lihat Detail</a>
+                            </div>
+                        </div>
+                    `;
+                }
+                postGrid.innerHTML += postHtml;
+            });
+        };
+
+        // Mengambil dan mendengarkan postingan secara real-time dari Firestore
+        const fetchPosts = () => {
+            const postsQuery = query(collection(db, "artifacts", appId, "public", "data", "posts"));
+            onSnapshot(postsQuery, (querySnapshot) => {
+                allPosts = [];
+                querySnapshot.forEach((doc) => {
+                    allPosts.push({ id: doc.id, ...doc.data() });
+                });
+                renderPosts(allPosts);
+            });
+        };
+
+        // Filter postingan berdasarkan input pencarian
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredPosts = allPosts.filter(post => {
+                return (
+                    (post.title && post.title.toLowerCase().includes(searchTerm)) ||
+                    (post.content && post.content.toLowerCase().includes(searchTerm)) ||
+                    (post.description && post.description.toLowerCase().includes(searchTerm))
+                );
+            });
+            renderPosts(filteredPosts);
+        });
+
+        // Event delegation untuk klik pada postingan
+        postGrid.addEventListener('click', (e) => {
+            const postCard = e.target.closest('[data-post-id]');
+            if (postCard) {
+                const postId = postCard.dataset.postId;
+                const post = allPosts.find(p => p.id === postId);
+                if (post) {
+                    showDetailModal(post);
+                }
+            }
+        });
+
+        // Logika Banner Otomatis
+        let currentBanner = 0;
+        const bannerContainer = document.getElementById('banner-container');
+        const banners = bannerContainer.children;
+        const bannerIndicators = document.getElementById('banner-indicators');
+        
+        // Buat indikator banner
+        for (let i = 0; i < banners.length; i++) {
+            const indicator = document.createElement('div');
+            indicator.classList.add('w-2', 'h-2', 'rounded-full', 'bg-white', 'bg-opacity-50', 'transition-colors', 'duration-300', 'cursor-pointer');
+            indicator.addEventListener('click', () => showBanner(i));
+            bannerIndicators.appendChild(indicator);
+        }
+
+        const showBanner = (index) => {
+            const totalBanners = banners.length;
+            if (index >= totalBanners) {
+                index = 0;
+            } else if (index < 0) {
+                index = totalBanners - 1;
+            }
+            currentBanner = index;
+            const offset = -currentBanner * 100;
+            bannerContainer.style.transform = `translateX(${offset}%)`;
+            updateIndicators();
+        };
+
+        const updateIndicators = () => {
+            const indicators = bannerIndicators.children;
+            Array.from(indicators).forEach((indicator, i) => {
+                if (i === currentBanner) {
+                    indicator.classList.add('bg-opacity-100');
+                } else {
+                    indicator.classList.remove('bg-opacity-100');
+                }
+            });
+        };
+        
+        const autoSlide = () => {
+            setInterval(() => {
+                showBanner(currentBanner + 1);
+            }, 5000); // Ganti banner setiap 5 detik
+        };
+
+        // Pantau status otentikasi
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                // Ambil profil pengguna dari Firestore
+                const userDocRef = doc(db, "artifacts", appId, "users", currentUser.uid);
+                const docSnap = await getDoc(userDocRef);
+                if (docSnap.exists()) {
+                    currentUserProfile = docSnap.data();
+                } else {
+                    console.warn("Profil pengguna tidak ditemukan. Menggunakan data default.");
+                }
+                userNameEl.textContent = currentUserProfile.namaPengguna || 'Pengguna';
+                userProfilePicEl.src = currentUserProfile.profilPicUrl || 'https://placehold.co/100x100';
+            } else {
+                currentUser = null;
+                userNameEl.textContent = "Pengguna Tamu";
+                userProfilePicEl.src = "https://placehold.co/100x100";
+            }
+            // Setelah status otentikasi dipastikan, mulai ambil data
+            fetchPosts();
+        });
+
+        // Mulai banner otomatis saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            showBanner(0);
+            autoSlide();
+        });
+    </script>
 </body>
 </html>
